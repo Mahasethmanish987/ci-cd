@@ -1,5 +1,5 @@
 #----------- Build Stage -------------
-FROM node:20-alpine3.22 AS build
+FROM node:20-alpine AS build
 
 RUN apk update && apk upgrade --no-cache
 
@@ -10,7 +10,7 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
 #----------- Production Stage -------------
-FROM node:20-alpine3.22 AS production
+FROM node:20-alpine AS production
 
 RUN apk update && apk upgrade --no-cache
 

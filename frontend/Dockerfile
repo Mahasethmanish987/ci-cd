@@ -1,5 +1,5 @@
 #----------- Build Stage -------------
-FROM node:20-alpine3.22 AS build
+FROM node:20-alpine AS build
 
 RUN apk update && apk upgrade --no-cache
 
@@ -14,7 +14,7 @@ COPY . .
 RUN npm run build
 
 #----------- Production Stage -------------
-FROM nginx:1.27-alpine3.22 AS production
+FROM nginx:1.27-alpine AS production
 
 RUN apk update && apk upgrade --no-cache
 
