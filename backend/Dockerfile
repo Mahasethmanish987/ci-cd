@@ -1,26 +1,35 @@
-FROM node:20-alpine AS build 
+#----------- Build Stage -------------
+FROM node:20-alpine3.22 AS build
 
-WORKDIR /app 
-COPY package.json package-lock.json  ./
-RUN npm ci --only=production && npm cache clean --force
+RUN apk update && apk upgrade --no-cache
 
+WORKDIR /app
 
-#----------- Production stage -----------
-FROM node:20-alpine AS production 
+COPY package.json package-lock.json ./
 
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN npm ci --omit=dev && npm cache clean --force
 
-RUN apk --no-cache add dumb-init=1.2.5-r3 
+#----------- Production Stage -------------
+FROM node:20-alpine3.22 AS production
 
-WORKDIR /app 
+RUN apk update && apk upgrade --no-cache
 
-COPY --from=build /app/node_modules ./node_modules 
+RUN addgroup -S appgroup && \
+    adduser -S appuser -G appgroup
 
-COPY src ./src/ 
+RUN apk add --no-cache dumb-init=1.2.5-r3
 
-USER appuser 
+WORKDIR /app
+
+COPY --from=build /app/node_modules ./node_modules
+
+COPY src ./src
+COPY package.json ./
+
+USER appuser
 
 EXPOSE 5000
 
-ENTRYPOINT ["dumb-init","--"]
-CMD ["node","src/index.js"]
+ENTRYPOINT ["dumb-init", "--"]
+
+CMD ["node", "src/index.js"]
