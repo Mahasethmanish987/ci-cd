@@ -111,37 +111,6 @@ jobs:
         cache-to: type=gha,mode=max 
         provenance: true 
         sbom: true      
-           
-  # image-scan:
-  #   name: "Scan ${{ matrix.component }} Image"
-  #   runs-on: ubuntu-latest 
-  #   continue-on-error: true 
-  #   needs: build 
-  #   strategy:
-  #     matrix: 
-  #       component: [backend, frontend]
-  #   steps:
-  #    - name: Checkout Code 
-  #      uses: actions/checkout@v4
-  #    - name: Build image for scanning
-  #      run: |
-  #        docker build \
-  #        --no-cache \
-  #        --pull \
-  #        -f ./${{ matrix.component }}/Dockerfile \
-  #        -t jerney-${{ matrix.component }}:scan \
-  #        ./${{ matrix.component }}
-
-  #    - name : Run Trivy vulnerability Scanner 
-  #      uses:  aquasecurity/trivy-action@v0.36.0
-  #      with: 
-  #        image-ref: "jerney-${{ matrix.component}}:scan"
-  #        format: "table"
-  #        exit-code: "1"
-  #        ignore-unfixed: true 
-  #        vuln-type: "os,library"
-  #        severity: "CRITICAL,HIGH"
-  #        timeout: "10m"
 
   iac-scan:
     name: "IaC Security Scan"
