@@ -2,7 +2,6 @@ FROM node:20-alpine AS build
 
 WORKDIR /app 
 COPY package.json package-lock.json  ./
-RUN npm install --package-lock-only
 RUN npm ci --only=production && npm cache clean --force
 
 
@@ -11,7 +10,7 @@ FROM node:20-alpine AS production
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-RUN apk --no-cache add dumb-init 
+RUN apk --no-cache add dumb-init=1.2.5-r3 
 
 WORKDIR /app 
 
