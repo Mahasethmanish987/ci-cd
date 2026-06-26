@@ -123,12 +123,17 @@ jobs:
     steps:
      - name: Checkout Code 
        uses: actions/checkout@v4
-     - name: Build image for scanning 
+     - name: Build image for scanning
        run: |
-         docker build -t jerney-${{ matrix.component }}:scan ./${{ matrix.component }}
+         docker build \
+         --no-cache \
+         --pull \
+         -f ./${{ matrix.component }}/Dockerfile \
+         -t jerney-${{ matrix.component }}:scan \
+         ./${{ matrix.component }}
 
      - name : Run Trivy vulnerability Scanner 
-       uses: aquasecurity/trivy-action@master 
+       uses:  aquasecurity/trivy-action@0.28.0
        with: 
          image-ref: "jerney-${{ matrix.component}}:scan"
          format: "table"
